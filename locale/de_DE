@@ -1,0 +1,10 @@
+NOT_YET_CONNECTED=Sie sind nicht mit einem Server verbunden!
+TRY_CONNECT=Verbindungsaufbau zu „{$0}“ auf Port {$1}.
+CONNECTED=Verbindung hergestellt.
+COULD_NOT_SEND=Es konnte nicht an den Server gesendet werden!
+IO_ERROR_WHILE_READING=Ein E/A-Fehler ({$0}) aufgetreten während Daten vom Server gelesen wurden!
+IO_ERROR_WHILE_CONNECTION=Beim Verbindungsaufbau zu „{$0}“ ist ein E/A-Fehler aufgetreten ({$1})!
+CLOSING_CONNECTION=Die Verbindung zu „{$0}“ wird beendet.
+CONNECTION_LOST=Verbindung zu „{$0}“ verloren.
+LOOKUP_ERROR=Der Hostname „{$0}“ konnte nicht aufgelöst werden!
+HOST_NEEDED=Bitte geben Sie einen Hostnamen und einen Port ein zu dem Sie sich verbinden möchten!

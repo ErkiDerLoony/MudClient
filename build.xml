@@ -1,0 +1,58 @@
+<project name="JMudClient" default="tar">
+
+  <property name="version" value="0.5.0" />
+
+  <property name="src.dir" value="src" />
+  <property name="bin.dir" value="bin" />
+  <property name="jar.file" value="${ant.project.name}-${version}.jar" />
+  <property name="tar.file" value="${ant.project.name}-${version}.tar.bz2" />
+
+  <property name="main.class" value="erki.mudclient.Controller" />
+
+  <!-- The classpath for use at compile time and in the jar file. -->
+  <path id="classpath">
+    <fileset dir="lib">
+      <include name="*.jar" />
+    </fileset>
+  </path>
+
+  <!-- Wrap the classpath for use in the jar file. -->
+  <manifestclasspath property="jar.classpath" jarfile="${jar.file}">
+    <classpath refid="classpath" />
+  </manifestclasspath>
+
+  <!-- Compile the whole program. -->
+  <target name="make">
+    <mkdir dir="${bin.dir}" />
+    <javac destdir="${bin.dir}" srcdir="${src.dir}" classpathref="classpath"
+           debug="on" debuglevel="lines,vars,source" />
+  </target>
+
+  <!-- Check if everything is compiled and then pack everything in an executable jar
+       file. -->
+  <target name="jar" depends="make">
+    <jar destfile="${jar.file}" basedir="${bin.dir}">
+      <manifest>
+        <attribute name="Main-Class" value="${main.class}" />
+        <attribute name="Class-Path" value="${jar.classpath}" />
+      </manifest>
+    </jar>
+  </target>
+
+  <!-- Rebuild everything and create a .tar.bz2 file that contains everything.
+       This target may be useful for deployment. -->
+  <target name="tar" depends="jar">
+    <delete file="${tar.file}" />
+    <tar destfile="${tar.file}" compression="bzip2">
+      <tarfileset dir="." prefix="${ant.project.name}-${version}" />
+    </tar>
+  </target>
+
+  <!-- Clean up everything. -->
+  <target name="clean">
+    <delete dir="${bin.dir}" />
+    <delete file="${jar.file}" />
+    <delete file="${tar.file}" />
+  </target>
+
+</project>

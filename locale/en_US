@@ -1,0 +1,10 @@
+NOT_YET_CONNECTED=You are not connected to a server!
+TRY_CONNECT=Trying to connect to “{$0}” on port {$1}.
+CONNECTED=Connection established.
+COULD_NOT_SEND=Could not send to server!
+IO_ERROR_WHILE_READING=An i/o error occurred while reading input from the server ({$0})!
+IO_ERROR_WHILE_CONNECTION=An i/o error occurred while connecting to “{$0}” ({$1})!
+CLOSING_CONNECTION=Closing connection to “{$0}”.
+CONNECTION_LOST=Connection lost to “{$0}”.
+LOOKUP_ERROR=Could not resolve “{$0}”!
+HOST_NEEDED=You have to enter a hostname and port to connect to!
