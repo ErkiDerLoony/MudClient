@@ -1,4 +1,4 @@
-<project name="JMudClient" default="tar">
+<project name="JMudClient" default="jar">
 
   <property name="version" value="0.5.0" />
 
