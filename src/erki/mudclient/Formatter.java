@@ -34,7 +34,7 @@ import javax.swing.text.StyleConstants;
 public class Formatter {
     
     /**
-     * @return An {@link AttributeSet} that actually does not contain any
+     * @return An {@code AttributeSet} that actually does not contain any
      *         attributes. This corresponds to the default text format.
      */
     public static AttributeSet getDefaultFormat() {
@@ -42,7 +42,7 @@ public class Formatter {
     }
     
     /**
-     * @return An {@link AttributeSet} that can be used to format error
+     * @return An {@code AttributeSet} that can be used to format error
      *         messages.
      */
     public static AttributeSet getErrorFormat() {
@@ -53,7 +53,7 @@ public class Formatter {
     }
     
     /**
-     * @return An {@link AttributeSet} that can be used to format warning
+     * @return An {@code AttributeSet} that can be used to format warning
      *         messages.
      */
     public static AttributeSet getWarningFormat() {
@@ -64,7 +64,7 @@ public class Formatter {
     }
     
     /**
-     * @return An {@link AttributeSet} that can be used to format informative
+     * @return An {@code AttributeSet} that can be used to format informative
      *         messages.
      */
     public static AttributeSet getInfoFormat() {
@@ -74,7 +74,7 @@ public class Formatter {
     }
     
     /**
-     * @return An {@link AttributeSet} that can be used for private messages
+     * @return An {@code AttributeSet} that can be used for private messages
      *         from other users.
      */
     public static AttributeSet getPMFormat() {
@@ -83,8 +83,15 @@ public class Formatter {
         return format;
     }
     
+    /** @return An {@code AttributeSet} that can be used to format the own input. */
+    public static AttributeSet getOwnInputFormat() {
+        SimpleAttributeSet format = new SimpleAttributeSet();
+        StyleConstants.setForeground(format, Color.GRAY);
+        return format;
+    }
+    
     /**
-     * @return An {@link AttributeSet} that can be used to format error messages
+     * @return An {@code AttributeSet} that can be used to format error messages
      *         from the server.
      */
     public static AttributeSet getServerErrorFormat() {

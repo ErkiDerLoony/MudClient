@@ -39,6 +39,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.util.LinkedList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -85,6 +86,10 @@ public class SwingUi extends JFrame {
     /** In tribute to the api. **/
     private static final long serialVersionUID = -6478785594016594970L;
     
+    private LinkedList<String> history = new LinkedList<String>();
+    
+    private int index = 0;
+    
     private JTextPane output;
     
     private JScrollPane scrollPane;
@@ -95,6 +100,7 @@ public class SwingUi extends JFrame {
     
     /** Create a new {@code SwingUI}. Loads gui settings and shows the gui. */
     public SwingUi() {
+        history.add("");
         
         // Try to change the look and feel to gtk as it looks better.
         try {
@@ -103,7 +109,8 @@ public class SwingUi extends JFrame {
                     + "GTKLookAndFeel");
         } catch (ClassNotFoundException e) {
             Log.error(this, e);
-            Log.info(this, "GTK look and feel was not found on your system.");
+            Log.info(this, "GTK look and feel could not be found on your "
+                    + "system.");
         } catch (InstantiationException e) {
             Log.error(this, e);
             Log.info(this, "GTK look and feel could not be instanciated.");
@@ -190,6 +197,31 @@ public class SwingUi extends JFrame {
             public void keyPressed(KeyEvent e) {
                 super.keyPressed(e);
                 keycode = e.getKeyCode();
+                
+                Log.debug(SwingUi.class, history.toString());
+                
+                if (!e.isActionKey() && index != history.size() - 1) {
+                    
+                    if (history.getLast().equals("")) {
+                        history.set(history.size() - 1, input.getText());
+                    } else {
+                        history.addLast(input.getText());
+                    }
+                    
+                    index = history.size() - 1;
+                }
+                
+                if (keycode == KeyEvent.VK_UP && index > 0) {
+                    history.set(index, input.getText());
+                    index--;
+                    input.setText(history.get(index));
+                }
+                
+                if (keycode == KeyEvent.VK_DOWN && index < history.size() - 1) {
+                    history.set(index, input.getText());
+                    index++;
+                    input.setText(history.get(index));
+                }
             }
             
             @Override
@@ -197,9 +229,13 @@ public class SwingUi extends JFrame {
                 super.keyTyped(e);
                 
                 if (keycode == KeyEvent.VK_ENTER) {
-                    Controller.getInstance().println(input.getText());
+                    Controller.getInstance().println(input.getText(),
+                            Formatter.getOwnInputFormat());
+                    history.set(index, input.getText());
                     parse(input.getText());
                     input.setText("");
+                    history.addLast("");
+                    index = history.size() - 1;
                 }
                 
                 if ((keycode == KeyEvent.VK_Q) && e.isControlDown()) {
