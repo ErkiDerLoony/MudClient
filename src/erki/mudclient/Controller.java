@@ -54,6 +54,11 @@ public class Controller {
     /** The gui that displays text. */
     private SwingUi gui;
     
+    /** Set to true on program exit; makes additional threads exit. */
+    private boolean killed = false;
+
+    private Thread healthThread;
+    
     /**
      * Adhering the singleton design pattern this constructor is private and
      * only called once from the main method. Initializes a user interface.
@@ -71,6 +76,32 @@ public class Controller {
                 gui = new SwingUi();
             }
         });
+        
+        // Start a new thread that (if connected) occasionally requests the
+        // user's health points etc.
+        healthThread = new Thread("HealthThread") {
+            
+            @Override
+            public void run() {
+                super.run();
+                
+                while (!killed) {
+                    
+                    if (connection != null) {
+                        connection.send("score verbose");
+                    }
+                    
+                    try {
+                        Thread.sleep(300000);
+                    } catch (InterruptedException e) {
+                    }
+                }
+            }
+            
+        };
+        
+        // TODO: Start health thread if parsing of health line is implemented.
+        //healthThread.start();
     }
     
     /**
@@ -92,6 +123,8 @@ public class Controller {
             connection.close();
         } else {
             gui.dispose();
+            killed = true;
+            healthThread.interrupt();
         }
     }
     
@@ -155,6 +188,8 @@ public class Controller {
         
         if (wasQuit) {
             gui.dispose();
+            killed = true;
+            healthThread.interrupt();
         }
     }
     
@@ -224,6 +259,7 @@ public class Controller {
         
         if (args.containsKey("--debug")) {
             Log.setDebug(true);
+            Log.debug(Controller.class, "Enabling debug output.");
             args.remove("--debug");
         }
         
