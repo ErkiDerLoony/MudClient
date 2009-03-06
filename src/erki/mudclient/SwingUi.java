@@ -22,6 +22,8 @@ package erki.mudclient;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -47,6 +49,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
@@ -98,6 +101,8 @@ public class SwingUi extends JFrame {
     
     private boolean scroll = true;
     
+    private Timer timer;
+    
     /** Create a new {@code SwingUI}. Loads gui settings and shows the gui. */
     public SwingUi() {
         history.add("");
@@ -134,6 +139,17 @@ public class SwingUi extends JFrame {
         
         // Load settings after creating the gui.
         loadSettings();
+        
+        // Make sure the user stays online.
+        timer = new Timer(300000, new ActionListener() {
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Controller.getInstance().send(getPhrase());
+            }
+        });
+        
+        timer.start();
         
         // Show the main window.
         setVisible(true);
@@ -197,6 +213,7 @@ public class SwingUi extends JFrame {
             public void keyPressed(KeyEvent e) {
                 super.keyPressed(e);
                 keycode = e.getKeyCode();
+                timer.restart();
                 
                 Log.debug(SwingUi.class, history.toString());
                 
@@ -331,6 +348,69 @@ public class SwingUi extends JFrame {
         }
         
         Controller.getInstance().send(input);
+    }
+    
+    private String getPhrase() {
+        LinkedList<String> smileList = new LinkedList<String>();
+        smileList.add("cutely");
+        smileList.add("manically");
+        smileList.add("patiently");
+        smileList.add("innocently");
+        smileList.add("kindly");
+        smileList.add("politely");
+        smileList.add("brightly");
+        
+        LinkedList<String> blinkList = new LinkedList<String>();
+        blinkList.add("full of boredom");
+        blinkList.add("amazed of the silence");
+        
+        LinkedList<String> mutterList = new LinkedList<String>();
+        mutterList.add("youth");
+        mutterList.add("dark robes");
+        mutterList.add("little green elves");
+        mutterList.add("dark spydry thyngs");
+        mutterList.add("a stolen crucifix");
+        mutterList.add("HIM");
+        mutterList.add("control and alternate delete");
+        
+        LinkedList<String> scratchList = new LinkedList<String>();
+        scratchList.add("nose");
+        scratchList.add("face");
+        scratchList.add("finger");
+        scratchList.add("cheek");
+        scratchList.add("ears");
+        
+        LinkedList<String> crackList = new LinkedList<String>();
+        crackList.add("nose");
+        crackList.add("neck");
+        crackList.add("backbones");
+        crackList.add("fingers");
+        crackList.add("knees");
+        
+        switch ((int) (Math.random() * 10)) {
+            case 0:
+                return "smile";
+            case 1:
+                return "smile " + smileList.get((int) (Math.random() * smileList.size()));
+            case 2:
+                return "blink";
+            case 3:
+                return "blink " + blinkList.get((int) (Math.random() * blinkList.size()));
+            case 4:
+                return "mutter";
+            case 5:
+                return "mutter " + mutterList.get((int) (Math.random() * mutterList.size()));
+            case 6:
+                return "scratch";
+            case 7:
+                return "scratch " + scratchList.get((int) (Math.random() * scratchList.size()));
+            case 8:
+                return "crack";
+            case 9:
+                return "crack " + crackList.get((int) (Math.random() * crackList.size()));
+            default:
+                return "daydream";
+        }
     }
     
     public void appendToOutput(String text, AttributeSet format) {
