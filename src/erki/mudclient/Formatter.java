@@ -90,6 +90,13 @@ public class Formatter {
         return format;
     }
     
+    /** @return An {@code AttributeSet} that can be used to format the time. */
+    public static AttributeSet getTimeFormat() {
+        SimpleAttributeSet format = new SimpleAttributeSet();
+        StyleConstants.setForeground(format, Color.LIGHT_GRAY);
+        return format;
+    }
+    
     /**
      * @return An {@code AttributeSet} that can be used to format error messages
      *         from the server.

@@ -41,6 +41,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.util.Calendar;
 import java.util.LinkedList;
 
 import javax.swing.JFrame;
@@ -74,14 +75,11 @@ public class SwingUi extends JFrame {
     /** The default foregound colour used for the output {@link JTextPane}. */
     public static final Color DEFAULT_FOREGROUND = new Color(127, 200, 255);
     
-    private static final File SETTINGS_FILE = new File(System
-            .getProperty("user.home")
-            + System.getProperty("file.separator") + ".jmudguirc")
-            .getAbsoluteFile();
+    private static final File SETTINGS_FILE = new File(System.getProperty("user.home")
+            + System.getProperty("file.separator") + ".jmudguirc").getAbsoluteFile();
     
     /** {@link Font} used for the input line at the bottom of the screen. */
-    public static final Font INPUT_FONT = new Font(Font.MONOSPACED, Font.PLAIN,
-            14);
+    public static final Font INPUT_FONT = new Font(Font.MONOSPACED, Font.PLAIN, 14);
     
     /** {@link Font} used for the output box. */
     public static final Font OUTPUT_FONT = INPUT_FONT;
@@ -103,6 +101,12 @@ public class SwingUi extends JFrame {
     
     private Timer timer;
     
+    private Thread timeThread;
+    
+    private String timeBuffer = null;
+    
+    private boolean lastLineIsTime = false;
+    
     /** Create a new {@code SwingUI}. Loads gui settings and shows the gui. */
     public SwingUi() {
         history.add("");
@@ -110,12 +114,10 @@ public class SwingUi extends JFrame {
         // Try to change the look and feel to gtk as it looks better.
         try {
             Log.print(this, "Trying to switch to gtk look and feel.");
-            UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk."
-                    + "GTKLookAndFeel");
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
         } catch (ClassNotFoundException e) {
             Log.error(this, e);
-            Log.info(this, "GTK look and feel could not be found on your "
-                    + "system.");
+            Log.info(this, "GTK look and feel could not be found on your system.");
         } catch (InstantiationException e) {
             Log.error(this, e);
             Log.info(this, "GTK look and feel could not be instanciated.");
@@ -151,6 +153,33 @@ public class SwingUi extends JFrame {
         
         timer.start();
         
+        // Start thread that displays timestamps.
+        timeThread = new Thread() {
+            
+            @Override
+            public void run() {
+                
+                while (true) {
+                    Calendar calendar = Calendar.getInstance();
+                    int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                    int minute = calendar.get(Calendar.MINUTE);
+                    String time = (hour < 10 ? "0" + hour : hour) + ":"
+                            + (minute < 10 ? "0" + minute : minute);
+                    printTime(time);
+                    
+                    while (Calendar.getInstance().get(Calendar.MINUTE) == minute) {
+                        
+                        try {
+                            Thread.sleep(61 - Calendar.getInstance().get(Calendar.MINUTE));
+                        } catch (InterruptedException e) {
+                        }
+                    }
+                }
+            }
+        };
+        
+        timeThread.start();
+        
         // Show the main window.
         setVisible(true);
         input.requestFocusInWindow();
@@ -167,8 +196,7 @@ public class SwingUi extends JFrame {
         output.setEditable(false);
         
         scrollPane = new JScrollPane(output);
-        scrollPane
-                .setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         
         JPanel wrapperPanel = new JPanel();
         wrapperPanel.setLayout(new BorderLayout());
@@ -198,10 +226,14 @@ public class SwingUi extends JFrame {
                 Controller.getInstance().quit();
             }
             
+            @SuppressWarnings("deprecation")
             @Override
             public void windowClosed(WindowEvent e) {
                 super.windowClosed(e);
                 saveSettings();
+                
+                // Exit time thread
+                timeThread.stop();
             }
         });
         
@@ -246,8 +278,8 @@ public class SwingUi extends JFrame {
                 super.keyTyped(e);
                 
                 if (keycode == KeyEvent.VK_ENTER) {
-                    Controller.getInstance().println(input.getText(),
-                            Formatter.getOwnInputFormat());
+                    Controller.getInstance()
+                            .println(input.getText(), Formatter.getOwnInputFormat());
                     history.set(index, input.getText());
                     parse(input.getText());
                     input.setText("");
@@ -261,19 +293,17 @@ public class SwingUi extends JFrame {
             }
         });
         
-        scrollPane.getVerticalScrollBar().getModel().addChangeListener(
-                new ChangeListener() {
-                    
-                    @Override
-                    public void stateChanged(ChangeEvent e) {
-                        
-                        if (scroll) {
-                            scrollPane.getVerticalScrollBar().setValue(
-                                    scrollPane.getVerticalScrollBar()
-                                            .getMaximum());
-                        }
-                    }
-                });
+        scrollPane.getVerticalScrollBar().getModel().addChangeListener(new ChangeListener() {
+            
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                
+                if (scroll) {
+                    scrollPane.getVerticalScrollBar().setValue(
+                            scrollPane.getVerticalScrollBar().getMaximum());
+                }
+            }
+        });
         
         scrollPane.getVerticalScrollBar().addMouseListener(new MouseAdapter() {
             
@@ -307,8 +337,7 @@ public class SwingUi extends JFrame {
             if (host.contains(" ")) {
                 
                 try {
-                    port = Integer.parseInt(host.substring(
-                            host.indexOf(' ') + 1).trim());
+                    port = Integer.parseInt(host.substring(host.indexOf(' ') + 1).trim());
                     host = host.substring(0, host.indexOf(' ')).trim();
                 } catch (NumberFormatException e) {
                     port = 23;
@@ -318,8 +347,7 @@ public class SwingUi extends JFrame {
             if (host.contains(":")) {
                 
                 try {
-                    port = Integer.parseInt(host.substring(
-                            host.indexOf(':') + 1).trim());
+                    port = Integer.parseInt(host.substring(host.indexOf(':') + 1).trim());
                     host = host.substring(host.indexOf(':')).trim();
                 } catch (NumberFormatException e) {
                     port = 23;
@@ -331,8 +359,7 @@ public class SwingUi extends JFrame {
         }
         
         if (input.toLowerCase().equals("/connect")) {
-            Controller.getInstance().println(
-                    Localizor.getInstance().get("HOST_NEEDED"),
+            Controller.getInstance().println(Localizor.getInstance().get("HOST_NEEDED"),
                     Formatter.getErrorFormat());
             return;
         }
@@ -413,6 +440,36 @@ public class SwingUi extends JFrame {
         }
     }
     
+    private void printTime(String time) {
+        
+        if (lastLineIsTime) {
+            timeBuffer = time;
+        } else {
+            // Scroll down automatically only if user did not scroll
+            // up. We do not want to disturb the user reading old
+            // lines.
+            scrollPane.revalidate();
+            scroll = (scrollPane.getVerticalScrollBar().getValue()
+                    + scrollPane.getVerticalScrollBar().getModel().getExtent() == scrollPane
+                    .getVerticalScrollBar().getMaximum());
+            
+            // Reset the time buffer.
+            timeBuffer = null;
+            lastLineIsTime = true;
+            
+            try {
+                output.getDocument().insertString(
+                        output.getDocument().getLength(),
+                        "------------------------------------ " + time
+                                + " ------------------------------------\n",
+                        Formatter.getTimeFormat());
+            } catch (BadLocationException e) {
+                // This cannot happen since the text is always inserted at the end
+                // of the document.
+            }
+        }
+    }
+    
     public void appendToOutput(String text, AttributeSet format) {
         // Scroll down automatically only if user did not scroll
         // up. We do not want to disturb the user reading old
@@ -422,9 +479,19 @@ public class SwingUi extends JFrame {
                 + scrollPane.getVerticalScrollBar().getModel().getExtent() == scrollPane
                 .getVerticalScrollBar().getMaximum());
         
+        // First print the time if the last line was already a time line.
+        if (lastLineIsTime && timeBuffer != null) {
+            lastLineIsTime = false;
+            printTime(timeBuffer);
+        }
+        
+        // Reset time buffer.
+        lastLineIsTime = false;
+        timeBuffer = null;
+        
+        // Now print the actual text output.
         try {
-            output.getDocument().insertString(output.getDocument().getLength(),
-                    text, format);
+            output.getDocument().insertString(output.getDocument().getLength(), text, format);
         } catch (BadLocationException e) {
             // This cannot happen since the text is always inserted at the end
             // of the document.
@@ -434,30 +501,26 @@ public class SwingUi extends JFrame {
     private void loadSettings() {
         
         try {
-            BufferedReader fileIn = new BufferedReader(new InputStreamReader(
-                    new FileInputStream(SETTINGS_FILE)));
+            BufferedReader fileIn = new BufferedReader(new InputStreamReader(new FileInputStream(
+                    SETTINGS_FILE)));
             String line;
             
             while ((line = fileIn.readLine()) != null) {
                 
                 if (line.startsWith("posX = ")) {
-                    setLocation(Integer.parseInt(line.substring("posX = "
-                            .length())), getY());
+                    setLocation(Integer.parseInt(line.substring("posX = ".length())), getY());
                 }
                 
                 if (line.startsWith("posY = ")) {
-                    setLocation(getX(), Integer.parseInt(line
-                            .substring("posY = ".length())));
+                    setLocation(getX(), Integer.parseInt(line.substring("posY = ".length())));
                 }
                 
                 if (line.startsWith("width = ")) {
-                    setSize(Integer.parseInt(line
-                            .substring("width = ".length())), getHeight());
+                    setSize(Integer.parseInt(line.substring("width = ".length())), getHeight());
                 }
                 
                 if (line.startsWith("height = ")) {
-                    setSize(getWidth(), Integer.parseInt(line
-                            .substring("height = ".length())));
+                    setSize(getWidth(), Integer.parseInt(line.substring("height = ".length())));
                 }
             }
             
@@ -467,8 +530,7 @@ public class SwingUi extends JFrame {
             Log.print(this, "No gui settings file found at " + SETTINGS_FILE
                     + ". Falling back to default settings.");
         } catch (IOException e) {
-            Log.warning(this, "Could not open " + SETTINGS_FILE
-                    + " to load the gui settings!");
+            Log.warning(this, "Could not open " + SETTINGS_FILE + " to load the gui settings!");
             Log.print(this, "Falling back to default settings.");
         }
     }
@@ -476,11 +538,10 @@ public class SwingUi extends JFrame {
     private void saveSettings() {
         
         try {
-            PrintWriter fileOut = new PrintWriter(new OutputStreamWriter(
-                    new PrintStream(SETTINGS_FILE)));
+            PrintWriter fileOut = new PrintWriter(new OutputStreamWriter(new PrintStream(
+                    SETTINGS_FILE)));
             fileOut.println("GUI settings file for the JMudClient.");
-            fileOut.println("Do not edit it unless you know what you are "
-                    + "doing!");
+            fileOut.println("Do not edit it unless you know what you are doing!");
             fileOut.println("posX = " + getX());
             fileOut.println("posY = " + getY());
             fileOut.println("width = " + getWidth());
@@ -488,8 +549,7 @@ public class SwingUi extends JFrame {
             fileOut.close();
             Log.print(this, "Saving gui settings to " + SETTINGS_FILE + ".");
         } catch (FileNotFoundException e) {
-            Log.warning(this, "Could not open " + SETTINGS_FILE
-                    + " to save the gui settings!");
+            Log.warning(this, "Could not open " + SETTINGS_FILE + " to save the gui settings!");
         }
     }
 }
