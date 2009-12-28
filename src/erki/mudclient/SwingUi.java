@@ -147,8 +147,12 @@ public class SwingUi extends JFrame {
             
             @Override
             public void actionPerformed(ActionEvent e) {
-                Controller.getInstance().send(getPhrase());
+                
+                if (Controller.getInstance().isConnected()) {
+                    Controller.getInstance().send(getPhrase());
+                }
             }
+            
         });
         
         timer.start();
