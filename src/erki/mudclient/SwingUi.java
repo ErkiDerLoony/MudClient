@@ -387,29 +387,19 @@ public class SwingUi extends JFrame {
         crackList.add("fingers");
         crackList.add("knees");
         
-        switch ((int) (Math.random() * 10)) {
+        switch ((int) (Math.random() * 5)) {
             case 0:
-                return "smile";
-            case 1:
                 return "smile " + smileList.get((int) (Math.random() * smileList.size()));
-            case 2:
-                return "blink";
-            case 3:
+            case 1:
                 return "blink " + blinkList.get((int) (Math.random() * blinkList.size()));
-            case 4:
-                return "mutter";
-            case 5:
+            case 2:
                 return "mutter " + mutterList.get((int) (Math.random() * mutterList.size()));
-            case 6:
-                return "scratch";
-            case 7:
+            case 3:
                 return "scratch " + scratchList.get((int) (Math.random() * scratchList.size()));
-            case 8:
-                return "crack";
-            case 9:
+            case 4:
                 return "crack " + crackList.get((int) (Math.random() * crackList.size()));
             default:
-                return "daydream";
+                return "look grim";
         }
     }
     
