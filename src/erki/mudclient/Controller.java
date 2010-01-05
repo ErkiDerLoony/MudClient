@@ -146,6 +146,10 @@ public class Controller {
         connection.start();
     }
     
+    public boolean isConnected() {
+        return connection != null;
+    }
+    
     /**
      * Send some text to the server. If the sending does not succeed or no
      * connection has been established so far an error message is output via the
