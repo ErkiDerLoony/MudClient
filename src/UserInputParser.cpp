@@ -37,6 +37,8 @@ void UserInputParser::parse() {
              mInput->text() == "/exit" ||
              mInput->text() == "/q") {
     quit();
+  } else {
+    mConnection->send(mInput->text());
   }
 
   mInput->clear();
