@@ -27,6 +27,7 @@ MudClient::MudClient() {
   layout->addWidget(output);
   layout->addWidget(input);
   input->setFocus();
+  setMinimumSize(QSize(640, 480));
 }
 
 MudClient::~MudClient() {

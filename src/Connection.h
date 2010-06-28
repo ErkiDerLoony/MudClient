@@ -22,9 +22,14 @@ public slots:
   void error(QAbstractSocket::SocketError socketError);
   void read();
 
+private slots:
+  void disconnected();
+
 private:
   QTcpSocket* mSocket;
   QTextEdit* mOutput;
+  QString* mHost;
+  int mPort;
 
 };
 
