@@ -1,5 +1,7 @@
 set(SRC
   MudClient.cpp
+  UserInputParser.cpp
+  Connection.cpp
 )
 
 include(${QT_USE_FILE})
