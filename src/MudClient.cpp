@@ -13,11 +13,12 @@ MudClient::MudClient() {
   setLayout(layout);
 
   QTextEdit* output = new QTextEdit();
+  output->setFont(QFont("Monospace", 10));
   output->setReadOnly(true);
 
   QLineEdit* input = new QLineEdit();
 
-  mConnection = new Connection();
+  mConnection = new Connection(output);
   mParser = new UserInputParser(input, output, mConnection);
 
   QObject::connect(input, SIGNAL(returnPressed()), mParser, SLOT(parse()));

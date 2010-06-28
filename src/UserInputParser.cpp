@@ -2,6 +2,7 @@
 
 #include "UserInputParser.h"
 #include "UserInputParser.moc"
+#include "Connection.h"
 
 UserInputParser::UserInputParser(QLineEdit* input, QTextEdit* output,
                                  Connection* connection)
