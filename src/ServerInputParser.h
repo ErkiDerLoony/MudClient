@@ -10,7 +10,7 @@ Q_OBJECT
 public:
   ServerInputParser(QTextEdit* output);
   virtual ~ServerInputParser() = 0;
-  virtual void parse(const char* input) = 0;
+  virtual void parse(const QString input) = 0;
 
 private:
   QTextEdit* mOutput;

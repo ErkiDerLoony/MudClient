@@ -1,7 +1,10 @@
+#include <QString>
+
 #include "Connection.h"
 #include "Connection.moc"
 
-Connection::Connection(QTextEdit* output) : mOutput(output) {
+Connection::Connection(QTextEdit* output, ServerInputParser* inputParser)
+  : mOutput(output), mInputParser(inputParser) {
   mSocket = new QTcpSocket();
   mHost = NULL;
   mPort = 23;
@@ -13,6 +16,7 @@ Connection::Connection(QTextEdit* output) : mOutput(output) {
 
 Connection::~Connection() {
   delete mSocket;
+  delete mInputParser;
 }
 
 void Connection::read() {
@@ -20,7 +24,7 @@ void Connection::read() {
   char buffer[size + 1];
   mSocket->read(buffer, size);
   buffer[size] = '\0';
-  mOutput->append(buffer);
+  mInputParser->parse(QString(buffer));
 }
 
 void Connection::error(QAbstractSocket::SocketError socketError) {

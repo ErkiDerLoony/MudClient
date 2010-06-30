@@ -16,16 +16,15 @@ MudInputParser::~MudInputParser() {
   delete mBuffer;
 }
 
-void MudInputParser::parse(const char* input, int size) {
+void MudInputParser::parse(const QString input) {
 
-  for (int i = 0; i < size; i++) {
-    char current[1];
-    current[0] = input[i];
+  for (int i = 0; i < input.size(); i++) {
+    QChar current = input.at(i);
 
     switch (mState) {
     case Scanning:
 
-      if (current[0] == '\033')
+      if (current == '\033')
         mState = WaitForBracket;
       else
         mOutput->textCursor().insertText(current, *mFormat);
@@ -34,7 +33,7 @@ void MudInputParser::parse(const char* input, int size) {
 
     case WaitForBracket:
 
-      if (current[0] == '[')
+      if (current == '[')
         mState = WaitForFirstNumber;
       else
         mState = Scanning;
@@ -46,7 +45,7 @@ void MudInputParser::parse(const char* input, int size) {
       if (QString(current).toInt() != 0) {
         mBuffer->append(current);
         mState = AccumulateNumbers;
-      } else if (current[0] == 'm') {
+      } else if (current == 'm') {
         delete mFormat;
         mFormat = new QTextCharFormat();
         mState = Scanning;
@@ -56,10 +55,10 @@ void MudInputParser::parse(const char* input, int size) {
 
     case AccumulateNumbers:
 
-      if (current[0] == ';') {
+      if (current == ';') {
         evaluate(mBuffer);
         mBuffer->clear();
-      } else if (current[0] == 'm') {
+      } else if (current == 'm') {
         evaluate(mBuffer);
         mBuffer->clear();
         mState = Scanning;

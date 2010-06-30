@@ -6,12 +6,14 @@
 #include <QTcpSocket>
 #include <QTextEdit>
 
+#include "ServerInputParser.h"
+
 class Connection : public QObject {
 
 Q_OBJECT
 
 public:
-  Connection(QTextEdit* output);
+  Connection(QTextEdit* output, ServerInputParser* inputParser);
   ~Connection();
   void connect(QString host, int port);
   void disconnect();
@@ -29,6 +31,7 @@ private:
   QTcpSocket* mSocket;
   QTextEdit* mOutput;
   QString* mHost;
+  ServerInputParser* mInputParser;
   int mPort;
 
 };

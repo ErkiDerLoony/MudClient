@@ -7,6 +7,7 @@
 
 #include "MudClient.h"
 #include "MudClient.moc"
+#include "MudInputParser.h"
 
 MudClient::MudClient() {
   QVBoxLayout* layout = new QVBoxLayout();
@@ -18,7 +19,7 @@ MudClient::MudClient() {
 
   QLineEdit* input = new QLineEdit();
 
-  mConnection = new Connection(output);
+  mConnection = new Connection(output, new MudInputParser(output));
   mParser = new UserInputParser(input, output, mConnection);
 
   QObject::connect(input, SIGNAL(returnPressed()), mParser, SLOT(parse()));
