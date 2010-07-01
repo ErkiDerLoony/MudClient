@@ -17,7 +17,7 @@ enum State {
 public:
   MudInputParser(QTextEdit* output);
   ~MudInputParser();
-  void parse(const QString input);
+  void parse(const char input);
 
 private:
   void evaluate(QString* number);

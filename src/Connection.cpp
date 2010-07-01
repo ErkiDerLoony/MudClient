@@ -1,4 +1,6 @@
+#include <iostream>
 #include <QString>
+#include <QByteArray>
 
 #include "Connection.h"
 #include "Connection.moc"
@@ -20,11 +22,12 @@ Connection::~Connection() {
 }
 
 void Connection::read() {
-  int size = mSocket->bytesAvailable();
-  char buffer[size + 1];
-  mSocket->read(buffer, size);
-  buffer[size] = '\0';
-  mInputParser->parse(QString(buffer));
+  QByteArray input = mSocket->readAll();
+  for (int i = 0; i < input.size(); i++) {
+    std::cout << "Parsing character “" << input[i] << "”" << std::endl <<
+      std::flush;
+    mInputParser->parse(input[i]);
+  }
 }
 
 void Connection::error(QAbstractSocket::SocketError socketError) {
