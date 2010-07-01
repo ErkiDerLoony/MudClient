@@ -1,4 +1,3 @@
-#include <iostream>
 #include <QFont>
 #include <QApplication>
 #include <QPalette>
@@ -21,7 +20,6 @@ MudInputParser::~MudInputParser() {
 void MudInputParser::parse(const QByteArray input) {
 
   for (int i = 0; i < input.size(); i++) {
-    std::cout << "Parsing character “" << input[i] << "”" << std::endl;
     char buffer[2];
     buffer[0] = input[i];
     buffer[1] = '\0';
@@ -124,25 +122,25 @@ void MudInputParser::evaluate(QString* number) {
     mFormat->setForeground(Qt::black);
     break;
   case 31:
-    mFormat->setForeground(red.darker().darker());
+    mFormat->setForeground(red.darker());
     break;
   case 32:
-    mFormat->setForeground(green.darker().darker());
+    mFormat->setForeground(green.darker());
     break;
   case 33:
-    mFormat->setForeground(yellow.darker().darker());
+    mFormat->setForeground(yellow.darker());
     break;
   case 34:
-    mFormat->setForeground(blue.darker().darker());
+    mFormat->setForeground(blue.darker());
     break;
   case 35:
-    mFormat->setForeground(magenta.darker().darker());
+    mFormat->setForeground(magenta.darker());
     break;
   case 36:
-    mFormat->setForeground(cyan.darker().darker());
+    mFormat->setForeground(cyan.darker());
     break;
   case 37:
-    mFormat->setForeground(white.darker().darker());
+    mFormat->setForeground(white.darker());
     break;
   case 39:
     mFormat->setForeground(QApplication::palette().color(QPalette::Foreground));
@@ -151,25 +149,25 @@ void MudInputParser::evaluate(QString* number) {
     mFormat->setBackground(black);
     break;
   case 41:
-    mFormat->setBackground(red.darker().darker());
+    mFormat->setBackground(red.darker());
     break;
   case 42:
-    mFormat->setBackground(green.darker().darker());
+    mFormat->setBackground(green.darker());
     break;
   case 43:
-    mFormat->setBackground(yellow.darker().darker());
+    mFormat->setBackground(yellow.darker());
     break;
   case 44:
-    mFormat->setBackground(blue.darker().darker());
+    mFormat->setBackground(blue.darker());
     break;
   case 45:
-    mFormat->setBackground(magenta.darker().darker());
+    mFormat->setBackground(magenta.darker());
     break;
   case 46:
-    mFormat->setBackground(cyan.darker().darker());
+    mFormat->setBackground(cyan.darker());
     break;
   case 47:
-    mFormat->setBackground(white.darker().darker());
+    mFormat->setBackground(white.darker());
     break;
   case 49:
     mFormat->setBackground(QApplication::palette().color(QPalette::Background));
