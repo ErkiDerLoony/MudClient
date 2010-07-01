@@ -10,13 +10,14 @@ UserInputParser::UserInputParser(QLineEdit* input, QTextEdit* output,
 }
 
 void UserInputParser::parse() {
-  mOutput->append("<font color=grey>" + mInput->text() + "</font>");
+  mOutput->textCursor().insertHtml("<font color=grey>" + mInput->text() +
+                                   "</font><br>");
 
   if (mInput->text() == "/connect") {
     QString error("<font color=red>");
     error.append("You need to specify a server to connect to!");
-    error.append("</font>");
-    mOutput->append(error);
+    error.append("</font><br>");
+    mOutput->textCursor().insertHtml(error);
   } else if (mInput->text().startsWith("/connect ")) {
     QString host = mInput->text().mid(QString("/connect ").length());
     int port = 23;
@@ -30,8 +31,8 @@ void UserInputParser::parse() {
       }
     }
 
-    mOutput->append("Connecting to " + host + ":" + QString::number(port) +
-                    " …");
+    mOutput->textCursor().insertText("Connecting to " + host + ":" +
+                                     QString::number(port) + " …\n");
     mConnection->connect(host, port);
   } else if (mInput->text() == "/quit" ||
              mInput->text() == "/exit" ||

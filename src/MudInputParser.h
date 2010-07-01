@@ -3,6 +3,7 @@
 
 #include <QTextEdit>
 #include <QTextCharFormat>
+#include <QByteArray>
 
 #include "ServerInputParser.h"
 
@@ -17,7 +18,7 @@ enum State {
 public:
   MudInputParser(QTextEdit* output);
   ~MudInputParser();
-  void parse(const char input);
+  void parse(const QByteArray input);
 
 private:
   void evaluate(QString* number);

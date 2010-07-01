@@ -10,6 +10,7 @@ Connection::Connection(QTextEdit* output, ServerInputParser* inputParser)
   mSocket = new QTcpSocket();
   mHost = NULL;
   mPort = 23;
+  mConnectionRequest = false;
   QObject::connect(mSocket, SIGNAL(readyRead()), this, SLOT(read()));
   QObject::connect(mSocket, SIGNAL(error(QAbstractSocket::SocketError)),
                    this, SLOT(error(QAbstractSocket::SocketError)));
@@ -22,17 +23,12 @@ Connection::~Connection() {
 }
 
 void Connection::read() {
-  QByteArray input = mSocket->readAll();
-  for (int i = 0; i < input.size(); i++) {
-    std::cout << "Parsing character “" << input[i] << "”" << std::endl <<
-      std::flush;
-    mInputParser->parse(input[i]);
-  }
+  mInputParser->parse(mSocket->readAll());
 }
 
 void Connection::error(QAbstractSocket::SocketError socketError) {
-  mOutput->append("<font color=red><b>" + mSocket->errorString() +
-                  "</b></font>");
+  mOutput->textCursor().insertHtml("<font color=red><b>" +
+                                   mSocket->errorString() + "</b></font><br>");
 }
 
 void Connection::send(QString text) {
@@ -42,13 +38,13 @@ void Connection::send(QString text) {
     mSocket->write(text.toAscii());
     mSocket->flush();
   } else {
-    mOutput->append(QString("<font color=red>You have to connect ") +
-                    "to a server first!</font>");
+    mOutput->textCursor().insertHtml("<font color=red>You have to connect " +
+                                     QString("to a server first!</font><br>"));
   }
 }
 
 void Connection::disconnect() {
-  mSocket->disconnectFromHost();
+    mSocket->disconnectFromHost();
 }
 
 bool Connection::isConnected() {
@@ -56,7 +52,11 @@ bool Connection::isConnected() {
 }
 
 void Connection::disconnected() {
-  mSocket->connectToHost(*mHost, mPort);
+
+  if (mConnectionRequest)
+    mSocket->connectToHost(*mHost, mPort);
+
+  mConnectionRequest = false;
 }
 
 void Connection::connect(QString host, int port) {
@@ -67,8 +67,9 @@ void Connection::connect(QString host, int port) {
   mHost = new QString(host);
   mPort = port;
 
-  if (isConnected())
+  if (isConnected()) {
+    mConnectionRequest = true;
     disconnect();
-  else
+  } else
     mSocket->connectToHost(*mHost, mPort);
 }

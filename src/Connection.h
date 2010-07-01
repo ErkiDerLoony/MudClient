@@ -33,6 +33,7 @@ private:
   QString* mHost;
   ServerInputParser* mInputParser;
   int mPort;
+  bool mConnectionRequest;
 
 };
 

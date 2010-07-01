@@ -18,63 +18,62 @@ MudInputParser::~MudInputParser() {
   delete mBuffer;
 }
 
-void MudInputParser::parse(const char input) {
+void MudInputParser::parse(const QByteArray input) {
 
-  switch (mState) {
-  case Scanning:
-    std::cout << "State is “Scanning”" << std::endl << std::flush;
+  for (int i = 0; i < input.size(); i++) {
+    std::cout << "Parsing character “" << input[i] << "”" << std::endl;
+    char buffer[2];
+    buffer[0] = input[i];
+    buffer[1] = '\0';
 
-    if (input == '\033') {
-      std::cout << "Hit escape character" << std::endl << std::flush;
-      mState = WaitForBracket;
-    } else {
-      std::cout << "Outputting character “" << input << "”" << std::endl
-                << std::flush;
-      mOutput->textCursor().insertText(QString(&input), *mFormat);
-      std::cout << "Character printed" << std::endl << std::flush;
+    switch (mState) {
+    case Scanning:
+
+      if (buffer[0] == '\033')
+        mState = WaitForBracket;
+      else
+        if (buffer[0] != '\r')
+          mOutput->textCursor().insertText(buffer, *mFormat);
+
+      break;
+
+    case WaitForBracket:
+
+      if (buffer[0] == '[')
+        mState = WaitForFirstNumber;
+      else
+        mState = Scanning;
+
+      break;
+
+    case WaitForFirstNumber:
+
+      if (QString(buffer[0]).toInt() != 0) {
+        mBuffer->append(buffer[0]);
+        mState = AccumulateNumbers;
+      } else if (buffer[0] == 'm') {
+        delete mFormat;
+        mFormat = new QTextCharFormat();
+        mState = Scanning;
+      } 
+
+      break;
+
+    case AccumulateNumbers:
+
+      if (buffer[0] == ';') {
+        evaluate(mBuffer);
+        mBuffer->clear();
+      } else if (buffer[0] == 'm') {
+        evaluate(mBuffer);
+        mBuffer->clear();
+        mState = Scanning;
+      } else {
+        mBuffer->append(buffer[0]);
+      }
+
+      break;
     }
-
-    break;
-
-  case WaitForBracket:
-    std::cout << "State is “WaitForBracket”" << std::endl << std::flush;
-
-    if (input == '[')
-      mState = WaitForFirstNumber;
-    else
-      mState = Scanning;
-
-    break;
-
-  case WaitForFirstNumber:
-    std::cout << "State is “WaitForFirstNumber”" << std::endl << std::flush;
-
-    if (QString(input).toInt() != 0) {
-      mBuffer->append(input);
-      mState = AccumulateNumbers;
-    } else if (input == 'm') {
-      delete mFormat;
-      mFormat = new QTextCharFormat();
-      mState = Scanning;
-    } 
-
-    break;
-
-  case AccumulateNumbers:
-    std::cout << "State is “AccumulateNumbers”" << std::endl << std::flush;
-
-    if (input == ';') {
-      evaluate(mBuffer);
-      mBuffer->clear();
-    } else if (input == 'm') {
-      evaluate(mBuffer);
-      mBuffer->clear();
-      mState = Scanning;
-    } else {
-      mBuffer->append(input);
-    }
-
-    break;
   }
 }
 
@@ -230,7 +229,7 @@ void MudInputParser::evaluate(QString* number) {
     mFormat->setBackground(QApplication::palette().color(QPalette::Background));
     break;
   default:
-    mOutput->append("<font color=red>Unknown modifier: " + *number +
-                    "</font>");
+    mOutput->textCursor().insertHtml("<font color=red>Unknown modifier: " +
+                                     *number + "</font><br>");
   }
 }
