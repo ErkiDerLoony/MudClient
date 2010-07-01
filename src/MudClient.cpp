@@ -15,24 +15,27 @@ MudClient::MudClient() {
   QVBoxLayout* layout = new QVBoxLayout();
   setLayout(layout);
 
-  QTextEdit* output = new QTextEdit();
-  QPalette p = output->palette();
+  mOutput = new QTextEdit();
+  QPalette p = mOutput->palette();
   p.setColor(QPalette::Base, Qt::black);
   p.setColor(QPalette::Text, QColor(127, 200, 255));
-  output->setPalette(p);
-  output->setFont(QFont("Monospace", 10));
-  output->setReadOnly(true);
-  output->setFocusPolicy(Qt::NoFocus);
+  mOutput->setPalette(p);
+  mOutput->setFont(QFont("Monospace", 10));
+  mOutput->setReadOnly(true);
+  mOutput->setFocusPolicy(Qt::NoFocus);
+
+  QObject::connect(mOutput, SIGNAL(textChanged()), this, SLOT(autoscroll()));
 
   QLineEdit* input = new QLineEdit();
+  input->setFont(QFont("Monospace", 10));
 
-  mConnection = new Connection(output, new MudInputParser(output));
-  mParser = new UserInputParser(input, output, mConnection);
+  mConnection = new Connection(mOutput, new MudInputParser(mOutput));
+  mParser = new UserInputParser(input, mOutput, mConnection);
 
   QObject::connect(input, SIGNAL(returnPressed()), mParser, SLOT(parse()));
   QObject::connect(mParser, SIGNAL(quit()), this, SLOT(close()));
 
-  layout->addWidget(output);
+  layout->addWidget(mOutput);
   layout->addWidget(input);
   setMinimumSize(QSize(640, 480));
 }
@@ -40,6 +43,12 @@ MudClient::MudClient() {
 MudClient::~MudClient() {
   delete mParser;
   delete mConnection;
+}
+
+void MudClient::autoscroll() {
+  QTextCursor c = mOutput->textCursor();
+  c.movePosition(QTextCursor::End);
+  mOutput->setTextCursor(c);
 }
 
 int main(int argc, char** argv) {

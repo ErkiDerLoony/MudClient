@@ -14,9 +14,13 @@ public:
   MudClient();
   ~MudClient();
 
+public slots:
+  void autoscroll();
+
 private:
   UserInputParser* mParser;
   Connection* mConnection;
+  QTextEdit* mOutput;
 
 };
 
