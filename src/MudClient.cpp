@@ -6,6 +6,7 @@
 #include <QTextCodec>
 #include <QPalette>
 #include <QColor>
+#include <QSettings>
 
 #include "MudClient.h"
 #include "MudClient.moc"
@@ -37,12 +38,26 @@ MudClient::MudClient() {
 
   layout->addWidget(mOutput);
   layout->addWidget(input);
-  setMinimumSize(QSize(640, 480));
+
+  // Load window size and position.
+  QSettings settings("@soft", "MudClient");
+  settings.beginGroup("MainWindow");
+  resize(settings.value("size", QSize(640, 480)).toSize());
+  move(settings.value("position", QPoint(0, 0)).toPoint());
+  settings.endGroup();
 }
 
 MudClient::~MudClient() {
   delete mParser;
   delete mConnection;
+}
+
+void MudClient::closeEvent(QCloseEvent* event) {
+  QSettings settings("@soft", "MudClient");
+  settings.beginGroup("MainWindow");
+  settings.setValue("size", size());
+  settings.setValue("position", pos());
+  settings.endGroup();
 }
 
 void MudClient::autoscroll() {

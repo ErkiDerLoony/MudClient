@@ -13,6 +13,7 @@ Q_OBJECT
 public:
   MudClient();
   ~MudClient();
+  void closeEvent(QCloseEvent* event);
 
 public slots:
   void autoscroll();
