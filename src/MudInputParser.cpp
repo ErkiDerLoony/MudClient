@@ -2,7 +2,7 @@
 #include <QApplication>
 #include <QPalette>
 
-#include "MudInputParser.h"
+#include "MudInputParser.hpp"
 #include "MudInputParser.moc"
 
 MudInputParser::MudInputParser(QTextEdit* output) : ServerInputParser(output),

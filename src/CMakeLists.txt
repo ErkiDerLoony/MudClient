@@ -4,6 +4,7 @@ set(SRC
   ServerInputParser.cpp
   InputLine.cpp
   MudInputParser.cpp
+  KeepAliveThread.cpp
   Connection.cpp
 )
 

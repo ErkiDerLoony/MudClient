@@ -2,7 +2,7 @@
 #include <QString>
 #include <QByteArray>
 
-#include "Connection.h"
+#include "Connection.hpp"
 #include "Connection.moc"
 
 Connection::Connection(QTextEdit* output, ServerInputParser* inputParser)

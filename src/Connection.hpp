@@ -6,7 +6,7 @@
 #include <QTcpSocket>
 #include <QTextEdit>
 
-#include "ServerInputParser.h"
+#include "ServerInputParser.hpp"
 
 class Connection : public QObject {
 

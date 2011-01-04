@@ -8,10 +8,10 @@
 #include <QColor>
 #include <QSettings>
 
-#include "MudClient.h"
+#include "MudClient.hpp"
 #include "MudClient.moc"
-#include "MudInputParser.h"
-#include "InputLine.h"
+#include "MudInputParser.hpp"
+#include "InputLine.hpp"
 
 MudClient::MudClient() {
   QVBoxLayout* layout = new QVBoxLayout();
@@ -39,6 +39,10 @@ MudClient::MudClient() {
 
   layout->addWidget(mOutput);
   layout->addWidget(input);
+
+  // Start keep alive thread.
+  mKeepAliveThread = new KeepAliveThread(input, mConnection);
+  mKeepAliveThread->start();
 
   // Load window size and position.
   QSettings settings("@soft", "MudClient");

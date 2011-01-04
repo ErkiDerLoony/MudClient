@@ -3,8 +3,9 @@
 
 #include <QWidget>
 
-#include "UserInputParser.h"
-#include "Connection.h"
+#include "UserInputParser.hpp"
+#include "Connection.hpp"
+#include "KeepAliveThread.hpp"
 
 class MudClient : public QWidget {
 
@@ -22,6 +23,7 @@ private:
   UserInputParser* mParser;
   Connection* mConnection;
   QTextEdit* mOutput;
+  KeepAliveThread* mKeepAliveThread;
 
 };
 

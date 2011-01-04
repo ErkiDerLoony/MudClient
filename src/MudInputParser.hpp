@@ -5,7 +5,7 @@
 #include <QTextCharFormat>
 #include <QByteArray>
 
-#include "ServerInputParser.h"
+#include "ServerInputParser.hpp"
 
 class MudInputParser : public ServerInputParser {
 

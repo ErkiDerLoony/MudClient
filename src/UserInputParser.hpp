@@ -5,7 +5,7 @@
 #include <QLineEdit>
 #include <QString>
 
-#include "Connection.h"
+#include "Connection.hpp"
 
 class UserInputParser : public QObject {
 

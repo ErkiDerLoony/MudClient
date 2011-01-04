@@ -1,8 +1,8 @@
 #include <iostream>
 
-#include "UserInputParser.h"
+#include "UserInputParser.hpp"
 #include "UserInputParser.moc"
-#include "Connection.h"
+#include "Connection.hpp"
 
 UserInputParser::UserInputParser(QLineEdit* input, QTextEdit* output,
                                  Connection* connection)

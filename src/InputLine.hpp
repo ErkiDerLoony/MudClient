@@ -16,6 +16,9 @@ public:
 public slots:
   void returnPressed();
 
+signals:
+  void keyPressed();
+
 protected:
   virtual void keyPressEvent(QKeyEvent* event);
 

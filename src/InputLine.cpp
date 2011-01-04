@@ -1,4 +1,4 @@
-#include "InputLine.h"
+#include "InputLine.hpp"
 #include "InputLine.moc"
 
 InputLine::InputLine() : mIndex(0) {
