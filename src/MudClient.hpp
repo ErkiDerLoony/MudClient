@@ -6,6 +6,7 @@
 #include "UserInputParser.hpp"
 #include "Connection.hpp"
 #include "KeepAliveThread.hpp"
+#include "TimeThread.hpp"
 
 class MudClient : public QWidget {
 
@@ -24,6 +25,7 @@ private:
   Connection* mConnection;
   QTextEdit* mOutput;
   KeepAliveThread* mKeepAliveThread;
+  TimeThread* mTimeThread;
 
 };
 

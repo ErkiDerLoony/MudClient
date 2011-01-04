@@ -5,6 +5,7 @@ set(SRC
   InputLine.cpp
   MudInputParser.cpp
   KeepAliveThread.cpp
+  TimeThread.cpp
   Connection.cpp
 )
 

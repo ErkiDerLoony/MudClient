@@ -40,9 +40,11 @@ MudClient::MudClient() {
   layout->addWidget(mOutput);
   layout->addWidget(input);
 
-  // Start keep alive thread.
+  // Start keep alive and timer threads.
   mKeepAliveThread = new KeepAliveThread(input, mConnection);
   mKeepAliveThread->start();
+  mTimeThread = new TimeThread(mOutput);
+  mTimeThread->start();
 
   // Load window size and position.
   QSettings settings("@soft", "MudClient");
@@ -55,6 +57,14 @@ MudClient::MudClient() {
 MudClient::~MudClient() {
   delete mParser;
   delete mConnection;
+
+  mKeepAliveThread->quit();
+  mKeepAliveThread->wait();
+  delete mKeepAliveThread;
+
+  mTimeThread->quit();
+  mTimeThread->wait();
+  delete mTimeThread;
 }
 
 void MudClient::closeEvent(QCloseEvent* event) {

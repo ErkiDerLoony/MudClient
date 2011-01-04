@@ -27,6 +27,15 @@ void KeepAliveThread::send() {
   }
 }
 
+void KeepAliveThread::reset() {
+  mTimer->setInterval(DELAY);
+}
+
+void KeepAliveThread::run() {
+  mTimer->start(DELAY);
+  exec();
+}
+
 QString* KeepAliveThread::getPhrase() {
   int rnd = (double(rand())/RAND_MAX)*5;
 
@@ -104,13 +113,4 @@ QString* KeepAliveThread::getScratch() {
   case 4: return new QString("scratch ears");
   default: return NULL;
   }
-}
-
-void KeepAliveThread::reset() {
-  mTimer->setInterval(DELAY);
-}
-
-void KeepAliveThread::run() {
-  mTimer->start(DELAY);
-  exec();
 }
