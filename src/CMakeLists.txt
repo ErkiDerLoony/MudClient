@@ -2,6 +2,7 @@ set(SRC
   MudClient.cpp
   UserInputParser.cpp
   ServerInputParser.cpp
+  InputLine.cpp
   MudInputParser.cpp
   Connection.cpp
 )
