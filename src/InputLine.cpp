@@ -1,7 +1,8 @@
 #include "InputLine.hpp"
 #include "InputLine.moc"
 
-InputLine::InputLine() : mIndex(0) {
+InputLine::InputLine() : mIndex(1) {
+  mHistory.push_back(new QString("/connect discworld.atuin.net"));
   mHistory.push_back(new QString(""));
   QObject::connect(this, SIGNAL(returnPressed()), this, SLOT(returnPressed()));
 }

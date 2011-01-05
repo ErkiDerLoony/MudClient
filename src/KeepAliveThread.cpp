@@ -65,7 +65,7 @@ QString* KeepAliveThread::getSmile() {
 }
 
 QString* KeepAliveThread::getCrack() {
-  int rnd = (double(rand())/RAND_MAX)*7;
+  int rnd = (double(rand())/RAND_MAX)*5;
 
   switch (rnd) {
   case 0: return new QString("crack nose");
