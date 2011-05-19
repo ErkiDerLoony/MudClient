@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "InputLine.hpp"
 #include "InputLine.moc"
 
@@ -13,6 +15,8 @@ InputLine::~InputLine() {
 }
 
 void InputLine::returnPressed() {
+  if (mIndex < mHistory.size())
+    *mHistory[mHistory.size() - 1] = text();
   mHistory[mIndex] = new QString(text());
   mHistory.push_back(new QString(""));
   mIndex = mHistory.size() - 1;
@@ -44,4 +48,14 @@ void InputLine::keyPressEvent(QKeyEvent* event) {
     mIndex++;
     setText(*mHistory[mIndex]);
   }
+
+  std::cout << "New history is:" << std::endl;
+  std::vector<QString*>::iterator it = mHistory.begin();
+  int counter = 0;
+  while (it != mHistory.end()) {
+    std::cout << "[" << counter << "] " << (*it)->toStdString() << std::endl;
+    it++;
+    counter++;
+  }
+  std::cout << "Index is: " << mIndex << std::endl;
 }

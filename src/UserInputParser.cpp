@@ -5,11 +5,13 @@
 #include "Connection.hpp"
 
 UserInputParser::UserInputParser(QLineEdit* input, QTextEdit* output,
-                                 Connection* connection)
-  : mInput(input), mOutput(output), mConnection(connection) {
+                                 Connection* connection,
+                                 KeepAliveThread* thread)
+  : mInput(input), mOutput(output), mConnection(connection), mThread(thread) {
 }
 
 void UserInputParser::parse() {
+  mThread->reset();
   mOutput->textCursor().insertHtml("<font color=grey>" + mInput->text() +
                                    "</font><br>");
 

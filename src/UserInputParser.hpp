@@ -6,13 +6,15 @@
 #include <QString>
 
 #include "Connection.hpp"
+#include "KeepAliveThread.hpp"
 
 class UserInputParser : public QObject {
 
 Q_OBJECT
 
 public:
-  UserInputParser(QLineEdit* input, QTextEdit* output, Connection* connection);
+  UserInputParser(QLineEdit* input, QTextEdit* output, Connection* connection,
+                  KeepAliveThread* thread);
 
 public slots:
   void parse();
@@ -24,6 +26,7 @@ private:
   QLineEdit* mInput;
   QTextEdit* mOutput;
   Connection* mConnection;
+  KeepAliveThread* mThread;
 
 };
 

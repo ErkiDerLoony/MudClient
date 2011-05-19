@@ -32,10 +32,6 @@ MudClient::MudClient() {
   input->setFont(QFont("Monospace", 10));
 
   mConnection = new Connection(mOutput, new MudInputParser(mOutput));
-  mParser = new UserInputParser(input, mOutput, mConnection);
-
-  QObject::connect(input, SIGNAL(returnPressed()), mParser, SLOT(parse()));
-  QObject::connect(mParser, SIGNAL(quit()), this, SLOT(close()));
 
   layout->addWidget(mOutput);
   layout->addWidget(input);
@@ -45,6 +41,12 @@ MudClient::MudClient() {
   mKeepAliveThread->start();
   mTimeThread = new TimeThread(mOutput);
   mTimeThread->start();
+
+  // Create parser for user input.
+  mParser = new UserInputParser(input, mOutput, mConnection, mKeepAliveThread);
+
+  QObject::connect(mParser, SIGNAL(quit()), this, SLOT(close()));
+  QObject::connect(input, SIGNAL(returnPressed()), mParser, SLOT(parse()));
 
   // Load window size and position.
   QSettings settings("@soft", "MudClient");
