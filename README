@@ -1,0 +1,7 @@
+To install do
+
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+$ make install
