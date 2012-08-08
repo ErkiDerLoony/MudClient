@@ -1,5 +1,5 @@
 /*
- * © Copyright 2008 by Edgar Kalkowski (eMail@edgar-kalkowski.de)
+ * © Copyright 2009–2010, 2012 by Edgar Kalkowski (eMail@edgar-kalkowski.de)
  * 
  * This file is part of the JMudClient.
  * 
