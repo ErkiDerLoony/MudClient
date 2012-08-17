@@ -46,20 +46,24 @@ void MudInputParser::parse(const QByteArray input) {
     switch (mState) {
     case Scanning:
 
-      if (buffer[0] == '\033')
+      if (buffer[0] == '\033') {
         mState = WaitForBracket;
-      else
-        if (buffer[0] != '\r')
+      } else {
+
+        if (buffer[0] != '\r') {
           mOutput->textCursor().insertText(buffer, *mFormat);
+        }
+      }
 
       break;
 
     case WaitForBracket:
 
-      if (buffer[0] == '[')
+      if (buffer[0] == '[') {
         mState = WaitForFirstNumber;
-      else
+      } else {
         mState = Scanning;
+      }
 
       break;
 
@@ -100,9 +104,6 @@ void MudInputParser::evaluate(QString* number) {
   QColor red = Qt::red, green = Qt::green, yellow = Qt::yellow, blue = Qt::blue,
     magenta = Qt::magenta, cyan = Qt::cyan, white = Qt::white, grey = Qt::gray,
     black = Qt::black;
-
-  if (n == 0)
-    return;
 
   switch (n) {
   case 0:
